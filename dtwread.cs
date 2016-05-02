@@ -31,13 +31,13 @@ namespace Application
 			foreach(string line in training)
 			{
 				string[] data = line.Split(',');
-				training_data.Add(new tPoint(Convert.ToDouble(data[dfield]) * 100, Convert.ToDouble(data[3])));
+				training_data.Add(new tPoint(Double.Parse(data[dfield]) * 100, Double.Parse(data[3])));
 			}
 			
 			foreach(string line in test)
 			{
 				string[] data = line.Split(',');
-				test_data.Add(new tPoint(Convert.ToDouble(data[dfield]) * 100, Convert.ToDouble(data[3])));
+				test_data.Add(new tPoint(Double.Parse(data[dfield]) * 100, Double.Parse(data[3])));
 			}
 			
 			RecognizerDTW rec = new RecognizerDTW(training_data);
