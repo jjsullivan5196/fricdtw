@@ -42,7 +42,7 @@ namespace Application
 			
 			RecognizerDTW rec = new RecognizerDTW(training_data);
 			
-			double score = args.Length == 4 ? rec.RecognizeWindow(test_data, Int32.Parse(args[3])) : rec.Recognize(test_data);
+			double score = rec.DTWDistance(test_data);
 			Console.WriteLine("{0:0.0000}", score);
 		}
 	}

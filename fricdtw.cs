@@ -24,7 +24,7 @@ namespace FricDTW
 		
 		public static double dist(tPoint p1, tPoint p2)
 		{
-			double d = Math.Pow((p2.time - p1.time), 2) + Math.Pow((p2.yDisp - p1.yDisp), 2);
+			double d = Math.Pow((p2.yDisp - p1.yDisp), 2);
 			return Math.Sqrt(d);
 		}
 	}
@@ -38,7 +38,7 @@ namespace FricDTW
 			this.train = train;
 		}
 		
-		public double Recognize(List<tPoint> input)
+		public double DTWDistance(List<tPoint> input)
 		{
 			double[,] DTW = new double[train.Count, input.Count];
 			
@@ -51,15 +51,15 @@ namespace FricDTW
 			for(int i = 1; i < train.Count; i++)
 				for(int j = 1; j < input.Count; j++)
 				{
-					double[] comp = new double[] {DTW[i-1, j], DTW[i, j-1], DTW[i-1, j-1]};
+					double trv = new double[] {DTW[i-1, j], DTW[i, j-1], DTW[i-1, j-1]}.Min();
 					double cost = tPoint.dist(train[i], input[j]);
-					DTW[i, j] = cost + comp.Min();
+					DTW[i, j] = cost + trv;
 				}
 			
 			return DTW[train.Count - 1, input.Count - 1];
 		}
 		
-		public double RecognizeWindow(List<tPoint> input, int window)
+		public double DTWDistanceWindow(List<tPoint> input, int window)
 		{
 			if(Math.Abs(train.Count - input.Count) > window) return -1;
 			
@@ -73,9 +73,9 @@ namespace FricDTW
 			for(int i = 1; i < train.Count; i++)
 				for(int j = Math.Max(1, i - window); j < Math.Min(input.Count, i + window); j++)
 				{
-					double[] comp = new double[] {DTW[i-1, j], DTW[i, j-1], DTW[i-1, j-1]};
+					double trv = new double[] {DTW[i-1, j], DTW[i, j-1], DTW[i-1, j-1]}.Min();
 					double cost = tPoint.dist(train[i], input[j]);
-					DTW[i, j] = cost + comp.Min();
+					DTW[i, j] = cost + trv;
 				}
 				
 			return DTW[train.Count - 1, input.Count - 1];
