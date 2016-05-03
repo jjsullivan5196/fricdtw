@@ -32,11 +32,30 @@ namespace FricDTW
 	public class RecognizerDTW
 	{
 		private List<tPoint> train;
+
+        public const int DATA_X = 0;
+        public const int DATA_Y = 1;
+        public const int DATA_Z = 2;
+        public const int DATA_T = 3;
+
+        public RecognizerDTW() { }
 		
 		public RecognizerDTW(List<tPoint> train)
 		{
 			this.train = train;
 		}
+
+        public RecognizerDTW(string data, int field)
+        {
+            List<tPoint> train = new List<tPoint>();
+            string[] tdata = data.Split('\n');
+            foreach(string line in tdata)
+            {
+                string[] d = line.Split(',');
+                train.Add(new tPoint(Double.Parse(d[field]), Double.Parse(d[DATA_T])));
+            }
+            this.train = train;
+        }
 		
 		public double DTWDistance(List<tPoint> input)
 		{
@@ -81,4 +100,27 @@ namespace FricDTW
 			return DTW[train.Count - 1, input.Count - 1];
 		}
 	}
+
+    public class SeriesRecognizer
+    {
+        private RecognizerDTW[][] activity;
+
+        public const int ACT_RISE = 0;
+        public const int ACT_CONT = 1;
+        public const int ACT_FALL = 2;
+        public const int MAXACT = 3;
+
+        public SeriesRecognizer()
+        {
+            activity = new RecognizerDTW[MAXACT][];
+            for (int i = 0; i < MAXACT; i++)
+                for (int j = 0; j < RecognizerDTW.DATA_T; j++)
+                    activity[i][j] = new RecognizerDTW();
+        }
+
+        public double Recognize(List<tPoint> input, int field, int step)
+        {
+            return activity[step][field].DTWDistance(input);
+        }
+    }
 }
